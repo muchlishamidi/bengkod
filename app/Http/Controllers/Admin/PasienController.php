@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\ExcelExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -87,5 +88,25 @@ class PasienController extends Controller
             ->route('pasien.index')
             ->with('message', 'Data Pasien berhasil dihapus')
             ->with('type', 'success');
+    }
+
+    public function export()
+    {
+        $pasiens = User::where('role', 'pasien')->get();
+        $headers = ['No', 'Nama Pasien', 'No. RM', 'Email', 'No. KTP', 'No. HP', 'Alamat'];
+        $rows = [];
+        foreach ($pasiens as $index => $pasien) {
+            $rows[] = [
+                $index + 1,
+                $pasien->nama,
+                $pasien->no_rm ?? '-',
+                $pasien->email,
+                $pasien->no_ktp ?? '-',
+                $pasien->no_hp ?? '-',
+                $pasien->alamat ?? '-',
+            ];
+        }
+
+        return ExcelExportService::export('data-pasien-' . date('Ymd_His') . '.xls', $headers, $rows, 'Data Pasien');
     }
 }

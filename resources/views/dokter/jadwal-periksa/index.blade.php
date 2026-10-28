@@ -6,11 +6,19 @@
             Jadwal Periksa
         </h2>
 
-        <a href="{{ route('jadwal-periksa.create') }}" class="btn bg-[#2d4499] hover:bg-[#1e2d6b] 
-                  text-white border-none rounded-lg px-5">
-            <i class="fas fa-plus"></i>
-            Tambah Jadwal Periksa
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('jadwal-periksa.export') }}" class="btn bg-emerald-600 hover:bg-emerald-700 
+                      text-white border-none rounded-lg px-5 shadow-sm">
+                <i class="fas fa-file-excel"></i>
+                Export Excel
+            </a>
+
+            <a href="{{ route('jadwal-periksa.create') }}" class="btn bg-[#2d4499] hover:bg-[#1e2d6b] 
+                      text-white border-none rounded-lg px-5 shadow-sm">
+                <i class="fas fa-plus"></i>
+                Tambah Jadwal Periksa
+            </a>
+        </div>
     </div>
 
     {{-- Alert Flash Message --}}
@@ -87,15 +95,15 @@
 
                         </tr>
                         @empty
-<tr>
-    <td colspan="5" class="text-center py-14 text-slate-400">
-        <div class="flex flex-col items-center justify-center gap-2">
-            <i class="fas fa-inbox text-3xl"></i>
-            <span>Belum ada Jadwal Periksa</span>
-        </div>
-    </td>
-</tr>
-@endforelse
+                        <tr>
+                            <td colspan="5" class="text-center py-14 text-slate-400">
+                                <div class="flex flex-col items-center justify-center gap-2">
+                                    <i class="fas fa-inbox text-3xl"></i>
+                                    <span>Belum ada Jadwal Periksa</span>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
 
                 </table>

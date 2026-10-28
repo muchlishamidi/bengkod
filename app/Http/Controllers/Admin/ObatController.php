@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Obat;
+use App\Services\ExcelExportService;
 use Illuminate\Http\Request;
 
 class ObatController extends Controller
@@ -24,12 +25,14 @@ class ObatController extends Controller
         $request->validate([
             'nama_obat' => 'required|string',
             'kemasan' => 'required|string',
-            'harga' => 'required|integer',
+            'stok' => 'required|integer|min:0',
+            'harga' => 'required|integer|min:0',
         ]);
 
         Obat::create([
             'nama_obat' => $request->nama_obat,
             'kemasan' => $request->kemasan,
+            'stok' => $request->stok,
             'harga' => $request->harga
         ]);
 
@@ -46,18 +49,21 @@ class ObatController extends Controller
             'obat' => $obat
         ]);
     }
-public function update(Request $request, string $id)
+
+    public function update(Request $request, string $id)
     {
         $request->validate([
             'nama_obat' => 'required|string',
             'kemasan' => 'nullable|string',
-            'harga' => 'required|integer',
+            'stok' => 'required|integer|min:0',
+            'harga' => 'required|integer|min:0',
         ]);
 
         $obat = Obat::findOrFail($id);
         $obat->update([
             'nama_obat' => $request->nama_obat,
             'kemasan' => $request->kemasan,
+            'stok' => $request->stok,
             'harga' => $request->harga
         ]);
 
@@ -76,5 +82,23 @@ public function update(Request $request, string $id)
             ->route('obat.index')
             ->with('message', 'Data Obat berhasil di Hapus')
             ->with('type', 'success');
+    }
+
+    public function export()
+    {
+        $obats = Obat::all();
+        $headers = ['No', 'Nama Obat', 'Kemasan', 'Stok', 'Harga (Rp)'];
+        $rows = [];
+        foreach ($obats as $index => $obat) {
+            $rows[] = [
+                $index + 1,
+                $obat->nama_obat,
+                $obat->kemasan ?? '-',
+                (int)($obat->stok ?? 0),
+                (int)$obat->harga,
+            ];
+        }
+
+        return ExcelExportService::export('data-obat-' . date('Ymd_His') . '.xls', $headers, $rows, 'Data Obat');
     }
 }

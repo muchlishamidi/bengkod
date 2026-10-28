@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dokter;
 
 use App\Http\Controllers\Controller;
 use App\Models\JadwalPeriksa;
+use App\Services\ExcelExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -69,5 +70,30 @@ class JadwalPeriksaController extends Controller
         return redirect()->route('jadwal-periksa.index')
             ->with('message', 'Berhasil Melakukan Hapus Data')
             ->with('type', 'success');
+    }
+
+    public function export()
+    {
+        $dokter = Auth::user();
+        $jadwalPeriksas = JadwalPeriksa::where('id_dokter', $dokter->id)
+            ->with(['dokter.poli', 'daftarPolis'])
+            ->orderBy('hari')
+            ->get();
+
+        $headers = ['No', 'Dokter', 'Poli', 'Hari', 'Jam Mulai', 'Jam Selesai', 'Total Pasien Mendaftar'];
+        $rows = [];
+        foreach ($jadwalPeriksas as $index => $jadwal) {
+            $rows[] = [
+                $index + 1,
+                $dokter->nama,
+                $dokter->poli->nama_poli ?? 'Poli Umum',
+                $jadwal->hari,
+                substr($jadwal->jam_mulai, 0, 5),
+                substr($jadwal->jam_selesai, 0, 5),
+                $jadwal->daftarPolis->count(),
+            ];
+        }
+
+        return ExcelExportService::export('jadwal-periksa-' . date('Ymd_His') . '.xls', $headers, $rows, 'Jadwal Periksa');
     }
 }

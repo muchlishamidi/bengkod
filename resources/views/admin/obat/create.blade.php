@@ -20,7 +20,7 @@
             <form action="{{ route('obat.store') }}" method="POST">
                 @csrf
 
-                {{-- Grid --}}
+                {{-- Grid 1: Nama & Kemasan --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
                     {{-- Nama Obat --}}
@@ -29,7 +29,7 @@
                             Nama Obat <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="nama_obat" value="{{ old('nama_obat') }}"
-                            placeholder="Masukkan nama obat..." class="w-full px-4 py-2 border-2 rounded-lg p-2
+                            placeholder="Masukkan nama obat..." class="w-full px-4 py-2 border-2 rounded-lg
                                       focus:border-primary focus:outline-none
                                       @error('nama_obat') border-red-500 @enderror" required>
                         @error('nama_obat')
@@ -40,12 +40,12 @@
                     {{-- Kemasan --}}
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">
-                            Kemasan
+                            Kemasan <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="kemasan" value="{{ old('kemasan') }}"
-                            placeholder="Contoh: Strip, Botol, Tube..." class="w-full px-4 py-2 border-2 rounded-lg p-2
+                            placeholder="Contoh: Strip, Botol, Tube..." class="w-full px-4 py-2 border-2 rounded-lg
                                       focus:border-primary focus:outline-none
-                                      @error('kemasan') border-red-500 @enderror">
+                                      @error('kemasan') border-red-500 @enderror" required>
                         @error('kemasan')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                         @enderror
@@ -53,32 +53,50 @@
 
                 </div>
 
-                {{-- Harga --}}
-                <div class="mb-8">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">
-                        Harga <span class="text-red-500">*</span>
-                    </label>
+                {{-- Grid 2: Stok & Harga --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
-                    <div class="flex items-center border-2 rounded-lg p-2 px-4 py-2
-                                focus-within:border-primary">
-                        <span class="text-slate-500 text-sm font-semibold mr-2">
-                            Rp
-                        </span>
-                        <input type="number" name="harga" value="{{ old('harga') }}" placeholder="0" min="0" step="1"
-                            class="w-full focus:outline-none
-                                      @error('harga') border-red-500 @enderror" required>
+                    {{-- Stok --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">
+                            Stok <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" name="stok" value="{{ old('stok', 0) }}" min="0"
+                            placeholder="0" class="w-full px-4 py-2 border-2 rounded-lg
+                                      focus:border-primary focus:outline-none
+                                      @error('stok') border-red-500 @enderror" required>
+                        @error('stok')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    @error('harga')
-                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                    @enderror
+                    {{-- Harga --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">
+                            Harga <span class="text-red-500">*</span>
+                        </label>
+
+                        <div class="flex items-center border-2 rounded-lg px-4 py-2
+                                    focus-within:border-primary @error('harga') border-red-500 @enderror">
+                            <span class="text-slate-500 text-sm font-semibold mr-2">
+                                Rp
+                            </span>
+                            <input type="number" name="harga" value="{{ old('harga') }}" placeholder="0" min="0" step="1"
+                                class="w-full focus:outline-none text-slate-800" required>
+                        </div>
+
+                        @error('harga')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                 </div>
 
                 {{-- Buttons --}}
                 <div class="flex gap-3">
                     <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary 
                                hover:bg-primary/90 text-white 
-                               font-semibold text-sm transition">
+                               font-semibold text-sm transition shadow-sm">
                         <i class="fas fa-save mr-1"></i>
                         Simpan
                     </button>

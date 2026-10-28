@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Poli;
 use App\Models\User;
+use App\Services\ExcelExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -95,5 +96,25 @@ class DokterController extends Controller
         return redirect()->route('dokter.index')
             ->with('message', 'Data Dokter Berhasil dihapus')
             ->with('type', 'success');
+    }
+
+    public function export()
+    {
+        $dokters = User::where('role', 'dokter')->with('poli')->get();
+        $headers = ['No', 'Nama Dokter', 'Email', 'No. KTP', 'No. HP', 'Alamat', 'Poli'];
+        $rows = [];
+        foreach ($dokters as $index => $dokter) {
+            $rows[] = [
+                $index + 1,
+                $dokter->nama,
+                $dokter->email,
+                $dokter->no_ktp ?? '-',
+                $dokter->no_hp ?? '-',
+                $dokter->alamat ?? '-',
+                $dokter->poli->nama_poli ?? 'Belum Dipilih',
+            ];
+        }
+
+        return ExcelExportService::export('data-dokter-' . date('Ymd_His') . '.xls', $headers, $rows, 'Data Dokter');
     }
 }

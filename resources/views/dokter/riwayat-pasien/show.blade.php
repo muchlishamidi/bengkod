@@ -45,8 +45,7 @@
                     </div>
                     <div class="flex gap-2">
                         <span class="w-36 text-slate-500 font-medium">Tanggal Periksa</span>
-                        <span class="text-slate-800">{{ \Carbon\Carbon::parse($periksa->tgl_periksa)->format('d/m/Y
-                            H:i') }}</span>
+                        <span class="text-slate-800">{{ \Carbon\Carbon::parse($periksa->tgl_periksa)->format('d/m/Y H:i') }}</span>
                     </div>
                 </div>
             </div>
@@ -67,8 +66,11 @@
         {{-- Obat yang Diresepkan --}}
         <div class="card bg-base-100 shadow-sm rounded-2xl border border-slate-200">
             <div class="card-body p-0">
-                <div class="px-6 py-4 border-b border-slate-200">
+                <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
                     <h3 class="font-bold text-slate-800">Obat yang Diresepkan</h3>
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-blue-50 text-blue-600 rounded-full border border-blue-200">
+                        <i class="fas fa-pills mr-1"></i> {{ $jumlahObat }} obat diresepkan
+                    </span>
                 </div>
                 <div class="p-0">
                     @if($periksa->detailPeriksas && $periksa->detailPeriksas->count() > 0)
@@ -85,8 +87,7 @@
                             <tr class="hover:bg-slate-50 transition">
                                 <td class="px-6 py-4 text-slate-500">{{ $index + 1 }}</td>
                                 <td class="px-6 py-4 font-semibold text-slate-800">{{ $detail->obat->nama_obat }}</td>
-                                <td class="px-6 py-4 text-slate-500">Rp {{ number_format($detail->obat->harga, 0, ',',
-                                    '.') }}</td>
+                                <td class="px-6 py-4 text-slate-500">Rp {{ number_format($detail->obat->harga, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
